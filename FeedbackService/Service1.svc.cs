@@ -8,6 +8,7 @@ using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text;
 using Dapper;
+using Newtonsoft.Json;
 
 namespace FeedbackService
 {
@@ -84,9 +85,8 @@ namespace FeedbackService
             }
         }
 
-        public bool PostFeedback(string id, string name, string title, string description)
+        public bool PostFeedback(Feedback f)
         {
-            Feedback fb = new Feedback(Int32.Parse(id), title, name, description);
 
             using (SqlConnection connection = new SqlConnection(_azureConn))
             {
@@ -95,10 +95,11 @@ namespace FeedbackService
                     $"INSERT INTO dbo.Feedback (Id, name, title, message) VALUES (@id,@name,@title,@message)";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@id", fb.Id);
-                    command.Parameters.AddWithValue("@name", fb.Name);
-                    command.Parameters.AddWithValue("@title", fb.Title);
-                    command.Parameters.AddWithValue("@message", fb.Message);
+
+                    command.Parameters.AddWithValue("@id", f.Id);
+                    command.Parameters.AddWithValue("@name", f.Name);
+                    command.Parameters.AddWithValue("@title", f.Title);
+                    command.Parameters.AddWithValue("@message", f.Message);
 
                     connection.Open();
                     int result = command.ExecuteNonQuery();
@@ -116,6 +117,69 @@ namespace FeedbackService
                 }
 
 
+            }
+        }
+
+        public bool DeleteFeedback(Feedback f)
+        {
+            using (SqlConnection connection = new SqlConnection(_azureConn))
+            {
+
+                string query =
+                    $"DELETE dbo.Feedback WHERE id = @id";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+
+                    command.Parameters.AddWithValue("@id", f.Id);
+
+                    connection.Open();
+                    int result = command.ExecuteNonQuery();
+
+                    if (result > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+
+                }
+
+
+            }
+        }
+
+        public bool PUTFeedback(Feedback f)
+        {
+            using (SqlConnection connection = new SqlConnection(_azureConn))
+            {
+
+                string query =
+                    $"UPDATE dbo.Feedback SET(Id, name, title, message) VALUES (@id,@name,@title,@message) WHERE id = @id";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+
+                    command.Parameters.AddWithValue("@id", f.Id);
+                    command.Parameters.AddWithValue("@name", f.Name);
+                    command.Parameters.AddWithValue("@title", f.Title);
+                    command.Parameters.AddWithValue("@message", f.Message);
+
+                    connection.Open();
+                    int result = command.ExecuteNonQuery();
+
+                    if (result > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+
+                }
             }
         }
     }

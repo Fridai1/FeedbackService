@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace FeedbackService
 {
@@ -24,9 +25,19 @@ namespace FeedbackService
         Feedback GetOneFeedback(string id);
 
         [OperationContract]
-        [WebInvoke(Method = "Post", ResponseFormat = WebMessageFormat.Json,
-            UriTemplate = "Feedback/feedback")]
-        bool PostFeedback(string id, string name, string title, string description);
+        [WebInvoke(Method = "POST",BodyStyle =WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json,
+            UriTemplate = "Feedback/")]
+        bool PostFeedback(Feedback f);
+
+        [OperationContract]
+        [WebInvoke(Method = "DELETE", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json,
+            UriTemplate = "Feedback/")]
+        bool DeleteFeedback(Feedback f);
+
+        [OperationContract]
+        [WebInvoke(Method = "PUT", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json,
+            UriTemplate = "Feedback/")]
+        bool PUTFeedback(Feedback f);
 
 
     }
