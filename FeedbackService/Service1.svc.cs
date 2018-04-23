@@ -50,9 +50,9 @@ namespace FeedbackService
             using (IDbConnection dapConnection = new SqlConnection(_azureConn))
             {
                 return dapConnection.Query<Feedback>("SELECT * FROM dbo.Feedback").ToList();
-               
+
             }
-            
+
         }
 
         public Feedback GetOneFeedback(string id)
@@ -77,9 +77,45 @@ namespace FeedbackService
 
 
                     }
+
                     connection.Close();
                     return fb;
                 }
+            }
+        }
+
+        public bool PostFeedback(string id, string name, string title, string description)
+        {
+            Feedback fb = new Feedback(Int32.Parse(id), title, name, description);
+
+            using (SqlConnection connection = new SqlConnection(_azureConn))
+            {
+
+                string query =
+                    $"INSERT INTO dbo.Feedback (Id, name, title, message) VALUES (@id,@name,@title,@message)";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@id", fb.Id);
+                    command.Parameters.AddWithValue("@name", fb.Name);
+                    command.Parameters.AddWithValue("@title", fb.Title);
+                    command.Parameters.AddWithValue("@message", fb.Message);
+
+                    connection.Open();
+                    int result = command.ExecuteNonQuery();
+
+                    if (result > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+
+                }
+
+
             }
         }
     }

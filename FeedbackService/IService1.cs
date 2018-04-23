@@ -23,6 +23,11 @@ namespace FeedbackService
             UriTemplate = "Feedback/id={id}")]
         Feedback GetOneFeedback(string id);
 
+        [OperationContract]
+        [WebInvoke(Method = "Post", ResponseFormat = WebMessageFormat.Json,
+            UriTemplate = "Feedback/feedback")]
+        bool PostFeedback(string id, string name, string title, string description);
+
 
     }
 
