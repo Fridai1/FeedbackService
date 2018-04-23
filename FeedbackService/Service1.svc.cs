@@ -50,11 +50,12 @@ namespace FeedbackService
             using (IDbConnection dapConnection = new SqlConnection(_azureConn))
             {
                 return dapConnection.Query<Feedback>("SELECT * FROM dbo.Feedback").ToList();
+               
             }
             
         }
 
-        public Feedback GetOneFeedback(int id)
+        public Feedback GetOneFeedback(string id)
         {
             Feedback fb = new Feedback();
             using (SqlConnection connection = new SqlConnection(_azureConn))

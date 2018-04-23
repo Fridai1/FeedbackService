@@ -21,7 +21,7 @@ namespace FeedbackService
         [OperationContract]
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "Feedback/id={id}")]
-        Feedback GetOneFeedback(int id);
+        Feedback GetOneFeedback(string id);
 
 
     }
